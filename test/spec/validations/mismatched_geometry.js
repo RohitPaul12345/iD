@@ -1,5 +1,5 @@
 describe('iD.validations.mismatched_geometry', function () {
-    var context, _savedAreaKeys;
+    let context, _savedAreaKeys;
 
     beforeEach(function() {
         _savedAreaKeys = iD.osmAreaKeys;
@@ -12,17 +12,17 @@ describe('iD.validations.mismatched_geometry', function () {
 
 
     function createPoint(tags) {
-        var n1 = iD.osmNode({id: 'n-1', loc: [4,4], tags: tags});
+        let n1 = iD.osmNode({id: 'n-1', loc: [4,4], tags: tags});
         context.perform(
             iD.actionAddEntity(n1)
         );
     }
 
     function createOpenWay(tags) {
-        var n1 = iD.osmNode({id: 'n-1', loc: [4,4]});
-        var n2 = iD.osmNode({id: 'n-2', loc: [4,5]});
-        var n3 = iD.osmNode({id: 'n-3', loc: [5,5]});
-        var w = iD.osmWay({id: 'w-1', nodes: ['n-1', 'n-2', 'n-3'], tags: tags});
+        let n1 = iD.osmNode({id: 'n-1', loc: [4,4]});
+        let n2 = iD.osmNode({id: 'n-2', loc: [4,5]});
+        let n3 = iD.osmNode({id: 'n-3', loc: [5,5]});
+        let w = iD.osmWay({id: 'w-1', nodes: ['n-1', 'n-2', 'n-3'], tags: tags});
 
         context.perform(
             iD.actionAddEntity(n1),
@@ -33,10 +33,10 @@ describe('iD.validations.mismatched_geometry', function () {
     }
 
     function createClosedWay(tags) {
-        var n1 = iD.osmNode({id: 'n-1', loc: [4,4]});
-        var n2 = iD.osmNode({id: 'n-2', loc: [4,5]});
-        var n3 = iD.osmNode({id: 'n-3', loc: [5,5]});
-        var w = iD.osmWay({id: 'w-1', nodes: ['n-1', 'n-2', 'n-3', 'n-1'], tags: tags});
+        let n1 = iD.osmNode({id: 'n-1', loc: [4,4]});
+        let n2 = iD.osmNode({id: 'n-2', loc: [4,5]});
+        let n3 = iD.osmNode({id: 'n-3', loc: [5,5]});
+        let w = iD.osmWay({id: 'w-1', nodes: ['n-1', 'n-2', 'n-3', 'n-1'], tags: tags});
 
         context.perform(
             iD.actionAddEntity(n1),
@@ -47,10 +47,10 @@ describe('iD.validations.mismatched_geometry', function () {
     }
 
     function validate() {
-        var validator = iD.validationMismatchedGeometry(context);
-        var changes = context.history().changes();
-        var entities = changes.modified.concat(changes.created);
-        var issues = [];
+        let validator = iD.validationMismatchedGeometry(context);
+        let changes = context.history().changes();
+        let entities = changes.modified.concat(changes.created);
+        let issues = [];
         entities.forEach(function(entity) {
             issues = issues.concat(validator(entity, context.graph()));
         });
@@ -59,40 +59,40 @@ describe('iD.validations.mismatched_geometry', function () {
 
 
     it('has no errors on init', function() {
-        var issues = validate();
+        let issues = validate();
         expect(issues).to.have.lengthOf(0);
     });
 
     it('ignores points', function() {
         createPoint({ building: 'yes' });
-        var issues = validate();
+        let issues = validate();
         expect(issues).to.have.lengthOf(0);
     });
 
     it('ignores open way without area tag', function() {
         createOpenWay({});
-        var issues = validate();
+        let issues = validate();
         expect(issues).to.have.lengthOf(0);
     });
 
     it('ignores closed way with area tag', function() {
         createClosedWay({ building: 'yes' });
-        var issues = validate();
+        let issues = validate();
         expect(issues).to.have.lengthOf(0);
     });
 
     it('ignores open way with tag that allows both lines and areas', function() {
         createOpenWay({ man_made: 'yes' });
-        var issues = validate();
+        let issues = validate();
         expect(issues).to.have.lengthOf(0);
     });
 
     it('flags open way with area tag', function() {
         iD.osmSetAreaKeys({ building: {} });
         createOpenWay({ building: 'yes' });
-        var issues = validate();
+        let issues = validate();
         expect(issues).to.have.lengthOf(1);
-        var issue = issues[0];
+        let issue = issues[0];
         expect(issue.type).to.eql('mismatched_geometry');
         expect(issue.subtype).to.eql('area_as_line');
         expect(issue.severity).to.eql('warning');
@@ -102,9 +102,9 @@ describe('iD.validations.mismatched_geometry', function () {
 
     it('flags open way with both area and line tags', function() {
         createOpenWay({ area: 'yes', barrier: 'fence' });
-        var issues = validate();
+        let issues = validate();
         expect(issues).to.have.lengthOf(1);
-        var issue = issues[0];
+        let issue = issues[0];
         expect(issue.type).to.eql('mismatched_geometry');
         expect(issue.subtype).to.eql('area_as_line');
         expect(issue.severity).to.eql('warning');
