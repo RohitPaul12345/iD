@@ -1,5 +1,5 @@
 describe('iD.validations.suspicious_name', function () {
-    var context;
+    let context;
 
     before(function() {
         iD.services.nsi = iD.serviceNsi;
@@ -42,10 +42,10 @@ describe('iD.validations.suspicious_name', function () {
     });
 
     function createWay(tags) {
-        var n1 = iD.osmNode({id: 'n-1', loc: [4,4]});
-        var n2 = iD.osmNode({id: 'n-2', loc: [4,5]});
-        var n3 = iD.osmNode({id: 'n-3', loc: [5,5]});
-        var w = iD.osmWay({id: 'w-1', nodes: ['n-1', 'n-2', 'n-3'], tags: tags});
+        let n1 = iD.osmNode({id: 'n-1', loc: [4,4]});
+        let n2 = iD.osmNode({id: 'n-2', loc: [4,5]});
+        let n3 = iD.osmNode({id: 'n-3', loc: [5,5]});
+        let w = iD.osmWay({id: 'w-1', nodes: ['n-1', 'n-2', 'n-3'], tags: tags});
 
         context.perform(
             iD.actionAddEntity(n1),
@@ -56,9 +56,9 @@ describe('iD.validations.suspicious_name', function () {
     }
 
     function validate(validator) {
-        var changes = context.history().changes();
-        var entities = changes.modified.concat(changes.created);
-        var issues = [];
+        let changes = context.history().changes();
+        let entities = changes.modified.concat(changes.created);
+        let issues = [];
         entities.forEach(function(entity) {
             issues = issues.concat(validator(entity, context.graph()));
         });
@@ -66,9 +66,9 @@ describe('iD.validations.suspicious_name', function () {
     }
 
     it('has no errors on init', function(done) {
-        var validator = iD.validationSuspiciousName(context);
+        let validator = iD.validationSuspiciousName(context);
         window.setTimeout(function() {   // async, so data will be available
-            var issues = validate(validator);
+            let issues = validate(validator);
             expect(issues).to.have.lengthOf(0);
             done();
         }, 20);
@@ -76,9 +76,9 @@ describe('iD.validations.suspicious_name', function () {
 
     it('ignores way with no tags', function(done) {
         createWay({});
-        var validator = iD.validationSuspiciousName(context);
+        let validator = iD.validationSuspiciousName(context);
         window.setTimeout(function() {   // async, so data will be available
-            var issues = validate(validator);
+            let issues = validate(validator);
             expect(issues).to.have.lengthOf(0);
             done();
         }, 20);
@@ -86,9 +86,9 @@ describe('iD.validations.suspicious_name', function () {
 
     it('ignores feature with no name', function(done) {
         createWay({ shop: 'supermarket' });
-        var validator = iD.validationSuspiciousName(context);
+        let validator = iD.validationSuspiciousName(context);
         window.setTimeout(function() {   // async, so data will be available
-            var issues = validate(validator);
+            let issues = validate(validator);
             expect(issues).to.have.lengthOf(0);
             done();
         }, 20);
@@ -96,9 +96,9 @@ describe('iD.validations.suspicious_name', function () {
 
     it('ignores feature with a specific name', function(done) {
         createWay({ shop: 'supermarket', name: 'Lou\'s' });
-        var validator = iD.validationSuspiciousName(context);
+        let validator = iD.validationSuspiciousName(context);
         window.setTimeout(function() {   // async, so data will be available
-            var issues = validate(validator);
+            let issues = validate(validator);
             expect(issues).to.have.lengthOf(0);
             done();
         }, 20);
@@ -106,9 +106,9 @@ describe('iD.validations.suspicious_name', function () {
 
     it('ignores feature with a specific name that includes a generic name', function(done) {
         createWay({ shop: 'supermarket', name: 'Lou\'s Store' });
-        var validator = iD.validationSuspiciousName(context);
+        let validator = iD.validationSuspiciousName(context);
         window.setTimeout(function() {   // async, so data will be available
-            var issues = validate(validator);
+            let issues = validate(validator);
             expect(issues).to.have.lengthOf(0);
             done();
         }, 20);
@@ -116,9 +116,9 @@ describe('iD.validations.suspicious_name', function () {
 
     it('ignores feature matching excludeNamed pattern in name-suggestion-index', function(done) {
         createWay({ shop: 'supermarket', name: 'famiglia cooperativa' });
-        var validator = iD.validationSuspiciousName(context);
+        let validator = iD.validationSuspiciousName(context);
         window.setTimeout(function() {   // async, so data will be available
-            var issues = validate(validator);
+            let issues = validate(validator);
             expect(issues).to.have.lengthOf(0);
             done();
         }, 20);
@@ -126,11 +126,11 @@ describe('iD.validations.suspicious_name', function () {
 
     it('flags feature matching a excludeGeneric pattern in name-suggestion-index', function(done) {
         createWay({ shop: 'supermarket', name: 'super mercado' });
-        var validator = iD.validationSuspiciousName(context);
+        let validator = iD.validationSuspiciousName(context);
         window.setTimeout(function() {   // async, so data will be available
-            var issues = validate(validator);
+            let issues = validate(validator);
             expect(issues).to.have.lengthOf(1);
-            var issue = issues[0];
+            let issue = issues[0];
             expect(issue.type).to.eql('suspicious_name');
             expect(issue.subtype).to.eql('generic_name');
             expect(issue.entityIds).to.have.lengthOf(1);
@@ -141,11 +141,11 @@ describe('iD.validations.suspicious_name', function () {
 
     it('flags feature matching a global exclude pattern in name-suggestion-index', function(done) {
         createWay({ shop: 'supermarket', name: 'store' });
-        var validator = iD.validationSuspiciousName(context);
+        let validator = iD.validationSuspiciousName(context);
         window.setTimeout(function() {   // async, so data will be available
-            var issues = validate(validator);
+            let issues = validate(validator);
             expect(issues).to.have.lengthOf(1);
-            var issue = issues[0];
+            let issue = issues[0];
             expect(issue.type).to.eql('suspicious_name');
             expect(issue.subtype).to.eql('generic_name');
             expect(issue.entityIds).to.have.lengthOf(1);
@@ -156,11 +156,11 @@ describe('iD.validations.suspicious_name', function () {
 
     it('flags feature with a name that is just a defining tag key', function(done) {
         createWay({ amenity: 'drinking_water', name: 'Amenity' });
-        var validator = iD.validationSuspiciousName(context);
+        let validator = iD.validationSuspiciousName(context);
         window.setTimeout(function() {   // async, so data will be available
-            var issues = validate(validator);
+            let issues = validate(validator);
             expect(issues).to.have.lengthOf(1);
-            var issue = issues[0];
+            let issue = issues[0];
             expect(issue.type).to.eql('suspicious_name');
             expect(issue.subtype).to.eql('generic_name');
             expect(issue.entityIds).to.have.lengthOf(1);
@@ -171,11 +171,11 @@ describe('iD.validations.suspicious_name', function () {
 
     it('flags feature with a name that is just a defining tag value', function(done) {
         createWay({ shop: 'red_bicycle_emporium', name: 'Red Bicycle Emporium' });
-        var validator = iD.validationSuspiciousName(context);
+        let validator = iD.validationSuspiciousName(context);
         window.setTimeout(function() {   // async, so data will be available
-            var issues = validate(validator);
+            let issues = validate(validator);
             expect(issues).to.have.lengthOf(1);
-            var issue = issues[0];
+            let issue = issues[0];
             expect(issue.type).to.eql('suspicious_name');
             expect(issue.subtype).to.eql('generic_name');
             expect(issue.entityIds).to.have.lengthOf(1);
@@ -186,9 +186,9 @@ describe('iD.validations.suspicious_name', function () {
 
     it('ignores feature with a non-matching `not:name` tag', function(done) {
         createWay({ shop: 'supermarket', name: 'Lou\'s', 'not:name': 'Lous' });
-        var validator = iD.validationSuspiciousName(context);
+        let validator = iD.validationSuspiciousName(context);
         window.setTimeout(function() {   // async, so data will be available
-            var issues = validate(validator);
+            let issues = validate(validator);
             expect(issues).to.have.lengthOf(0);
             done();
         }, 20);
@@ -196,11 +196,11 @@ describe('iD.validations.suspicious_name', function () {
 
     it('flags feature with a matching `not:name` tag', function(done) {
         createWay({ shop: 'supermarket', name: 'Lous', 'not:name': 'Lous' });
-        var validator = iD.validationSuspiciousName(context);
+        let validator = iD.validationSuspiciousName(context);
         window.setTimeout(function() {   // async, so data will be available
-            var issues = validate(validator);
+            let issues = validate(validator);
             expect(issues).to.have.lengthOf(1);
-            var issue = issues[0];
+            let issue = issues[0];
             expect(issue.type).to.eql('suspicious_name');
             expect(issue.subtype).to.eql('not_name');
             expect(issue.entityIds).to.have.lengthOf(1);
@@ -212,10 +212,10 @@ describe('iD.validations.suspicious_name', function () {
     it('flags feature with a matching a semicolon-separated `not:name` tag', function(done) {
         createWay({ shop: 'supermarket', name: 'Lous', 'not:name': 'Louis\';Lous;Louis\'s' });
         window.setTimeout(function() {   // async, so data will be available
-            var validator = iD.validationSuspiciousName(context);
-            var issues = validate(validator);
+            let validator = iD.validationSuspiciousName(context);
+            let issues = validate(validator);
             expect(issues).to.have.lengthOf(1);
-            var issue = issues[0];
+            let issue = issues[0];
             expect(issue.type).to.eql('suspicious_name');
             expect(issue.subtype).to.eql('not_name');
             expect(issue.entityIds).to.have.lengthOf(1);
