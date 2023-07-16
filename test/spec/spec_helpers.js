@@ -3,14 +3,14 @@
 iD.debug = true;
 
 // Disable things that use the network
-for (var k in iD.services) { delete iD.services[k]; }
+for (let k in iD.services) { delete iD.services[k]; }
 
 // Try not to load imagery
 window.location.hash = '#background=none';
 
 // Run without data for speed (tests which need data can set it up themselves)
 iD.fileFetcher.assetPath('../dist/');
-var cached = iD.fileFetcher.cache();
+let cached = iD.fileFetcher.cache();
 
 // Initializing `coreContext` will try loading the locale data and English locale strings:
 cached.locales = { en: { rtl: false, pct: 1 } };
